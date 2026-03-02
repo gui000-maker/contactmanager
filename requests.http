@@ -1,0 +1,44 @@
+### Create Contact
+POST http://localhost:8080/contacts
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "age": 25,
+  "email": "john@example.com",
+  "phoneNumber": "123456789"
+}
+
+### Get All Contacts
+GET http://localhost:8080/contacts
+
+### Get All Contacts (Paging + Sorting)
+GET http://localhost:8080/contacts?page=0&size=5&sort=name,asc
+
+### Get Contact By ID
+GET http://localhost:8080/contacts/1
+
+### Update Contact
+PUT http://localhost:8080/contacts/1
+Content-Type: application/json
+
+{
+  "name": "John Updated",
+  "age": 30,
+  "email": "john.updated@example.com",
+  "phoneNumber": "999999999"
+}
+
+### Delete Contact
+DELETE http://localhost:8080/contacts/1
+
+### Trigger Validation Error
+POST http://localhost:8080/contacts
+Content-Type: application/json
+
+{
+  "name": "",
+  "age": -5,
+  "email": "invalid-email",
+  "phoneNumber": "123"
+}
