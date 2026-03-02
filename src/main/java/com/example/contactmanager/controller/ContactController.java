@@ -1,4 +1,4 @@
-package com.example.accessingdatajpa.controller;
+package com.example.contactmanager.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/contacts")
 public class ContactController {
     private final com.example.accessingdatajpa.service.ContactService contactService;
 
