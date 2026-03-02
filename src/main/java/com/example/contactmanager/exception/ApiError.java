@@ -1,4 +1,4 @@
-package com.example.accessingdatajpa.exception;
+package com.example.contactmanager.exception;
 
 import java.time.LocalDateTime;
 

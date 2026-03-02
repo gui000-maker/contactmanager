@@ -1,4 +1,5 @@
-package com.example.accessingdatajpa.exception;
+package com.example.contactmanager.exception;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
