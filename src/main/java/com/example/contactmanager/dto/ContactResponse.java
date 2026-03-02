@@ -1,4 +1,4 @@
-package com.example.accessingdatajpa.dto;
+package com.example.contactmanager.dto;
 
 import java.time.LocalDateTime;
 
