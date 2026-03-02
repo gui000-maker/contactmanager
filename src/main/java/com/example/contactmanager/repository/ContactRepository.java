@@ -1,12 +1,8 @@
-package com.example.accessingdatajpa.repository;
+package com.example.contactmanager.repository;
 
-import java.util.List;
+import com.example.contactmanager.entity.Contact;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import org.springframework.data.repository.CrudRepository;
+public interface ContactRepository extends JpaRepository<Contact, Long> {
 
-public interface ContactRepository extends CrudRepository<com.example.accessingdatajpa.entity.Contact, Long> {
-
-    List<com.example.accessingdatajpa.entity.Contact> findByLastName(String lastName);
-
-    com.example.accessingdatajpa.entity.Contact findById(long id);
 }

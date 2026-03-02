@@ -1,18 +1,23 @@
-package com.example.accessingdatajpa.dto;
+package com.example.contactmanager.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 /**
  * DTO used for creating/updating a Customer.
  */
 public record ContactRequest(
 
-        @NotBlank(message = "First name cannot be empty")
-        @Size(max = 50, message = "First name must be at most 50 characters")
-        String firstName,
+        @NotBlank(message = "Name cannot be empty")
+        @Size(max = 50, message = "Name must be at most 50 characters")
+        String name,
 
-        @NotBlank(message = "Last name cannot be empty")
-        @Size(max = 50, message = "Last name must be at most 50 characters")
-        String lastName
+        @Min(value = 0, message = "Age must be >= 0")
+        @Max(value = 120, message = "Age must be <= 120")
+        int age,
+
+        @Email(message = "Email must be valid")
+        String email,
+
+        @Pattern(regexp = "\\+?[0-9\\-]{7,15}", message = "Invalid phone number")
+        String phoneNumber
 ) {}

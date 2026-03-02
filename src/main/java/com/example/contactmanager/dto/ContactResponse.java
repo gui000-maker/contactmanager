@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 
 public record ContactResponse(
         Long id,
-        String firstName,
-        String lastName,
+        String name,
+        int age,
+        String email,
+        String phoneNumber,
         LocalDateTime createdAt
 ) {}
