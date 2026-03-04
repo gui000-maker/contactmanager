@@ -88,4 +88,16 @@ public class ContactService {
                 contact.getCreatedAt()
         );
     }
+
+    @Transactional(readOnly = true)
+    public Page<ContactResponse> searchByName(String name, Pageable pageable) {
+
+        if (name == null || name.isBlank()) {
+            return Page.empty(pageable);
+        }
+
+        return contactRepository
+                .findByNameContainingIgnoreCase(name.trim(), pageable)
+                .map(this::toResponse);
+    }
 }

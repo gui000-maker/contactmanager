@@ -13,7 +13,7 @@ public record ContactRequest(
 
         @Min(value = 0, message = "Age must be >= 0")
         @Max(value = 120, message = "Age must be <= 120")
-        int age,
+        Integer age,
 
         @Email(message = "Email must be valid")
         String email,
