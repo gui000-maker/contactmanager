@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contacts</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h1>Contacts</h1>
+
+<!-- Search Form -->
+<form th:action="@{/contacts/search}" method="get">
+    <input type="text"
+           name="name"
+           placeholder="Search by name"
+           th:value="${searchTerm}" />
+    <button type="submit">Search</button>
+</form>
+
+<br/>
+
+<a th:href="@{/contacts/new}">Create New Contact</a>
+
+<br/><br/>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th>Phone</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${page.content.isEmpty()}">
+        <td colspan="4">No contacts found</td>
+    </tr>
+
+    <tr th:each="contact : ${page.content}">
+        <td th:text="${contact.name}"></td>
+        <td th:text="${contact.email}"></td>
+        <td th:text="${contact.age}"></td>
+        <td th:text="${contact.phoneNumber}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<br/>
+
+<!-- Pagination Controls -->
+<div>
+    <span th:text="'Page ' + (${page.number} + 1) + ' of ' + ${page.totalPages}"></span>
+</div>
+
+<div>
+    <!-- Previous -->
+    <a th:if="${page.hasPrevious()}"
+       th:href="@{/contacts/search(name=${searchTerm}, page=${page.number - 1}, size=${page.size})}">
+        Previous
+    </a>
+
+    <!-- Next -->
+    <a th:if="${page.hasNext()}"
+       th:href="@{/contacts/search(name=${searchTerm}, page=${page.number + 1}, size=${page.size})}">
+        Next
+    </a>
+</div>
+
+</body>
+</html>
