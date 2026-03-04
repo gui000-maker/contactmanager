@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/contacts")
+// @RestController
+// @RequestMapping("/contacts")
 public class ContactController {
 
     private final ContactService contactService;
