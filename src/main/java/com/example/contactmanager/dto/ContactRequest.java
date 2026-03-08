@@ -2,9 +2,6 @@ package com.example.contactmanager.dto;
 
 import jakarta.validation.constraints.*;
 
-/**
- * DTO used for creating/updating a Customer.
- */
 public record ContactRequest(
 
         @NotBlank(message = "Name cannot be empty")
