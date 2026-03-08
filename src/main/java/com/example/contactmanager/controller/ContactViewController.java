@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-@Controller
-@RequestMapping("/contacts")
+// @Controller
+// @RequestMapping("/contacts")
 public class ContactViewController {
 
     private final ContactService contactService;
