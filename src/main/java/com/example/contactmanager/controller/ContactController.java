@@ -38,7 +38,7 @@ public class ContactController {
 
     @GetMapping
     @Operation(summary = "Get all contacts")
-    public Page<ContactResponse> getAllContacts(@ParameterObject Pageable pageable) {
+    public Page<ContactResponse> getAllContacts(Pageable pageable) {
         return contactService.getAll(pageable);
     }
 
