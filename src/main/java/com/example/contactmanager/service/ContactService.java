@@ -25,10 +25,10 @@ public class ContactService {
     public ContactResponse create(ContactRequest request) {
 
         Contact contact = new Contact(
-                request.name(),
-                request.age(),
-                request.email(),
-                request.phoneNumber()
+                request.getName(),
+                request.getAge(),
+                request.getEmail(),
+                request.getPhoneNumber()
         );
 
         Contact saved = contactRepository.save(contact);
@@ -61,10 +61,10 @@ public class ContactService {
                         new ResourceNotFoundException("Contact not found with id: " + id)
                 );
 
-        contact.setName(updatedContact.name());
-        contact.setAge(updatedContact.age());
-        contact.setEmail(updatedContact.email());
-        contact.setPhoneNumber(updatedContact.phoneNumber());
+        contact.setName(updatedContact.getName());
+        contact.setAge(updatedContact.getAge());
+        contact.setEmail(updatedContact.getEmail());
+        contact.setPhoneNumber(updatedContact.getPhoneNumber());
 
         return toResponse(contact);
     }
