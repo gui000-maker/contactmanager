@@ -4,6 +4,7 @@ import com.example.contactmanager.dto.ContactRequest;
 import com.example.contactmanager.dto.ContactResponse;
 import com.example.contactmanager.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/contacts")
+@Tag(name = "Contacts", description = "Operations related to contacts")
 public class ContactController {
 
     private final ContactService contactService;
