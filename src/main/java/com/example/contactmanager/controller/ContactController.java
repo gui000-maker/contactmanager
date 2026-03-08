@@ -3,6 +3,7 @@ package com.example.contactmanager.controller;
 import com.example.contactmanager.dto.ContactRequest;
 import com.example.contactmanager.dto.ContactResponse;
 import com.example.contactmanager.service.ContactService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ public class ContactController {
     }
 
     @PostMapping
+    @Operation(summary = "Create a new contact")
     public ResponseEntity<ContactResponse> createContact(
             @Valid @RequestBody ContactRequest request
     ) {
@@ -32,16 +34,19 @@ public class ContactController {
     }
 
     @GetMapping
+    @Operation(summary = "Get all contacts")
     public Page<ContactResponse> getAllContacts(Pageable pageable) {
         return contactService.getAll(pageable);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get a contact by ID")
     public ContactResponse getContactById(@PathVariable Long id) {
         return contactService.getById(id);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update a contact by ID")
     public ContactResponse updateContact(
             @PathVariable Long id,
             @Valid @RequestBody ContactRequest request
@@ -50,6 +55,7 @@ public class ContactController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a contact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteContact(@PathVariable Long id) {
         contactService.delete(id);
