@@ -19,16 +19,33 @@ repositories {
 }
 
 dependencies {
+
+	// Web / REST
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'org.postgresql:postgresql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Validation (Bean Validation / Jakarta Validation)
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	// Persistence
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Database drivers
+	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'com.h2database:h2'
+
+	// API documentation
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
+
+	// Template engine (only needed if you render HTML pages)
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	// Testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
