@@ -18,7 +18,10 @@ class ContactRepositoryIntegrationTest {
 
 	@Container
 	static PostgreSQLContainer<?> postgres =
-			new PostgreSQLContainer<>("postgres:16");
+			new PostgreSQLContainer<>("postgres:16")
+					.withDatabaseName("testdb")
+					.withUsername("test")
+					.withPassword("test");
 
 	@DynamicPropertySource
 	static void configureProperties(DynamicPropertyRegistry registry) {
