@@ -1,4 +1,4 @@
-package com.example.contactmanager;
+package com.example.contactmanager.integration;
 
 import com.example.contactmanager.entity.Contact;
 import com.example.contactmanager.repository.ContactRepository;
