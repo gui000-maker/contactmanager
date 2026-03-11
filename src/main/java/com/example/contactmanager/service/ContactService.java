@@ -18,6 +18,7 @@ public class ContactService {
 
     private final ContactRepository contactRepository;
     private static final Logger logger = LoggerFactory.getLogger(ContactService.class);
+
     public ContactService(ContactRepository contactRepository) {
         this.contactRepository = contactRepository;
     }

@@ -6,6 +6,8 @@ import com.example.contactmanager.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class ContactController {
 
     private final ContactService contactService;
+    private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
 
     public ContactController(ContactService contactService) {
         this.contactService = contactService;
