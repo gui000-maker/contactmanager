@@ -25,9 +25,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    /**
-     * Handles validation errors from @Valid.
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidation(
