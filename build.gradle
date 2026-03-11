@@ -33,6 +33,9 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly 'com.h2database:h2'
 
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	// API documentation
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16'
 
