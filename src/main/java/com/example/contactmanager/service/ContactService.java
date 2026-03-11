@@ -10,19 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
-@Transactional
 public class ContactService {
 
     private final ContactRepository contactRepository;
-
+    private static final Logger logger = LoggerFactory.getLogger(ContactService.class);
     public ContactService(ContactRepository contactRepository) {
         this.contactRepository = contactRepository;
     }
 
+    @Transactional
     public ContactResponse create(ContactRequest request) {
+
+        logger.info("Creating contact with email: {}", request.email());
 
         Contact contact = new Contact(
                 request.name(),
@@ -33,11 +36,15 @@ public class ContactService {
 
         Contact saved = contactRepository.save(contact);
 
+        logger.info("Contact created with id: {}", saved.getId());
+
         return toResponse(saved);
     }
 
     @Transactional(readOnly = true)
     public Page<ContactResponse> getAll(Pageable pageable) {
+
+        logger.debug("Fetching all contacts with pageable: {}", pageable);
 
         return contactRepository.findAll(pageable)
                 .map(this::toResponse);
@@ -45,6 +52,8 @@ public class ContactService {
 
     @Transactional(readOnly = true)
     public ContactResponse getById(Long id) {
+
+        logger.debug("Fetching contact with id: {}", id);
 
         Contact contact = contactRepository.findById(id)
                 .orElseThrow(() ->
@@ -54,7 +63,10 @@ public class ContactService {
         return toResponse(contact);
     }
 
+    @Transactional
     public ContactResponse update(Long id, ContactRequest updatedContact) {
+
+        logger.info("Updating contact with id: {}", id);
 
         Contact contact = contactRepository.findById(id)
                 .orElseThrow(() ->
@@ -69,13 +81,30 @@ public class ContactService {
         return toResponse(contact);
     }
 
+    @Transactional
     public void delete(Long id) {
+
+        logger.info("Deleting contact with id: {}", id);
 
         if (!contactRepository.existsById(id)) {
             throw new ResourceNotFoundException("Contact not found with id: " + id);
         }
 
         contactRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ContactResponse> searchByName(String name, Pageable pageable) {
+
+        logger.debug("Searching for contacts with name: {}", name);
+
+        if (name == null || name.isBlank()) {
+            return Page.empty(pageable);
+        }
+
+        return contactRepository
+                .findByNameContainingIgnoreCase(name.trim(), pageable)
+                .map(this::toResponse);
     }
 
     private ContactResponse toResponse(Contact contact) {
@@ -87,17 +116,5 @@ public class ContactService {
                 contact.getPhoneNumber(),
                 contact.getCreatedAt()
         );
-    }
-
-    @Transactional(readOnly = true)
-    public Page<ContactResponse> searchByName(String name, Pageable pageable) {
-
-        if (name == null || name.isBlank()) {
-            return Page.empty(pageable);
-        }
-
-        return contactRepository
-                .findByNameContainingIgnoreCase(name.trim(), pageable)
-                .map(this::toResponse);
     }
 }
