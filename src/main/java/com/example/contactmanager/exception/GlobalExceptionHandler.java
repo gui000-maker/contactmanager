@@ -68,9 +68,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    /**
-     * Formats field validation errors.
-     */
     private String formatFieldError(FieldError error) {
         return error.getField() + ": " + error.getDefaultMessage();
     }
