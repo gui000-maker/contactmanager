@@ -37,8 +37,8 @@ public class User {
     @Override
     public String toString() {
         return String.format(
-                "User[id=%d, username='%s', role='%s']",
-                id, username, role);
+                "User[id=%d, username='%s', password='%s']",
+                id, username, password);
     }
 
     public Long getId() {
@@ -52,6 +52,7 @@ public class User {
     public String getRole() {
         return role;
     }
+
     public String getPassword() {
         return password;
     }
