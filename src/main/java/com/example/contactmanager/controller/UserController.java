@@ -41,6 +41,16 @@ public class UserController {
                 .body(created);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get a user by ID")
+    public UserResponse getUserById(@PathVariable Long id) {
+        return userService.findById(id);
+    }
 
-
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a user by ID")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+    }
 }
