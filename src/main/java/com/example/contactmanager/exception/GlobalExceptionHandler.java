@@ -56,17 +56,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handleGeneric(
-            Exception ex,
-            HttpServletRequest request
-    ) {
+    public ApiError handleGeneric(Exception ex, HttpServletRequest request) {
 
-        logger.error("Unexpected error: {}", ex.getMessage(), ex);
+        logger.error("Unexpected error", ex);
 
         return new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                "An unexpected error occurred",
+                ex.getMessage(),
                 request.getRequestURI()
         );
     }

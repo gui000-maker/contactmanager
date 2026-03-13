@@ -4,8 +4,8 @@ POST http://localhost:8080/users
 Content-Type: application/json
 
 {
-"username": "johGS22n_doe",
-"password": "12345678"
+  "username": "testuser",
+  "password": "12345678"
 }
 
 ### Get All Users
