@@ -1,5 +1,6 @@
 package com.example.contactmanager.service;
 
+import com.example.contactmanager.dto.UserResponse;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.dto.UserRequest;
 import com.example.contactmanager.exception.ResourceNotFoundException;
@@ -20,7 +21,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createUser(UserRequest request) {
+    public UserResponse createUser(UserRequest request) {
         User user = new User(
                 request.username(),
                 request.password()
@@ -28,7 +29,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return save(user);
+        return toResponse(user);
     }
 
     public Page<User> findAllByUsername (String username, Pageable pageable) {
@@ -40,5 +41,14 @@ public class UserService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found with id: " + id)
                 );
+    }
+
+    private UserResponse toResponse(User user) {
+        return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getRole(),
+                user.getCreatedAt()
+        );
     }
 }
