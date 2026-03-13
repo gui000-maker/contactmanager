@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -37,8 +37,8 @@ public class User {
     @Override
     public String toString() {
         return String.format(
-                "User[id=%d, username='%s', password='%s']",
-                id, username, password);
+                "User[id=%d, username='%s', role='%s']",
+                id, username, role);
     }
 
     public Long getId() {
