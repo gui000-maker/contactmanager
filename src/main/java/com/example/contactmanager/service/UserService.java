@@ -4,24 +4,31 @@ import com.example.contactmanager.dto.UserResponse;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.dto.UserRequest;
 import com.example.contactmanager.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.contactmanager.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public UserResponse createUser(UserRequest request) {
+        logger.info("Creating user with username: {}", request.username());
+
         User user = new User(
                 request.username(),
                 request.password()
@@ -32,11 +39,18 @@ public class UserService {
         return toResponse(user);
     }
 
-    public Page<User> findAllByUsername (String username, Pageable pageable) {
-        return userRepository.findByUsernameContainingIgnoreCase(username, pageable);
+    @Transactional(readOnly = true)
+    public Page<UserResponse> getAll(Pageable pageable) {
+        logger.debug("Fetching all users with pageable: {}", pageable);
+
+        return userRepository.findAll(pageable)
+                .map(this::toResponse);
     }
 
+    @Transactional(readOnly = true)
     public UserResponse findById(Long id) {
+        logger.debug("Fetching user with id: {}", id);
+
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found with id: " + id)
