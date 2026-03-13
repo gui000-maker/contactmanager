@@ -29,6 +29,10 @@ public class UserService {
     public UserResponse createUser(UserRequest request) {
         logger.info("Creating user with username: {}", request.username());
 
+        if (userRepository.existsByUsername(request.username())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
         User user = new User(
                 request.username(),
                 passwordEncoder.encode(request.password())

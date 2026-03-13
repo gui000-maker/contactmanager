@@ -71,6 +71,20 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleConflict(
+            IllegalArgumentException ex,
+            HttpServletRequest request
+    ) {
+        return new ApiError(
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
     private String formatFieldError(FieldError error) {
         return error.getField() + ": " + error.getDefaultMessage();
     }
