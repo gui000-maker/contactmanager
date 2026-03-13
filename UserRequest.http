@@ -4,7 +4,7 @@ POST http://localhost:8080/users
 Content-Type: application/json
 
 {
-"username": "johGS2n_doe",
+"username": "johGS22n_doe",
 "password": "12345678"
 }
 
