@@ -36,11 +36,13 @@ public class UserService {
         return userRepository.findByUsernameContainingIgnoreCase(username, pageable);
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id)
+    public UserResponse findById(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found with id: " + id)
                 );
+
+        return toResponse(user);
     }
 
     private UserResponse toResponse(User user) {
