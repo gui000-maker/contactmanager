@@ -31,12 +31,12 @@ public class UserService {
 
         User user = new User(
                 request.username(),
-                request.password()
+                passwordEncoder.encode(request.password())
         );
 
-        userRepository.save(user);
+        User saved = userRepository.save(user);
 
-        return toResponse(user);
+        return toResponse(saved);
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +59,7 @@ public class UserService {
         return toResponse(user);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         logger.info("Deleting user with id: {}", id);
 
