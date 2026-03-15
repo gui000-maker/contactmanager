@@ -51,6 +51,26 @@ import java.lang.annotation.*;
         ),
 
         @ApiResponse(
+                responseCode = "404",
+                description = "Resource not found",
+                content = @Content(
+                        schema = @Schema(implementation = ApiError.class),
+                        examples = @ExampleObject(
+                                name = "NotFoundExample",
+                                value = """
+                                {
+                                  "status": 404,
+                                  "error": "Not Found",
+                                  "message": "Contact not found with id: 10",
+                                  "path": "/contacts/10",
+                                  "timestamp": "2026-03-15T20:15:30"
+                                }
+                                """
+                        )
+                )
+        ),
+
+        @ApiResponse(
                 responseCode = "409",
                 description = "Conflict",
                 content = @Content(
