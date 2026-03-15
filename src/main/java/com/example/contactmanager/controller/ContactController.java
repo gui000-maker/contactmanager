@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@ApiErrorResponses
 @RestController
 @RequestMapping("/contacts")
 @Tag(name = "Contacts", description = "Operations related to contacts")
@@ -24,7 +25,6 @@ public class ContactController {
         this.contactService = contactService;
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Create a new contact")
     @PostMapping
     public ResponseEntity<ContactResponse> createContact(
@@ -37,21 +37,18 @@ public class ContactController {
                 .body(created);
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Get all contacts")
     @GetMapping
     public Page<ContactResponse> getAllContacts(Pageable pageable) {
         return contactService.getAll(pageable);
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Get a contact by ID")
     @GetMapping("/{id}")
     public ContactResponse getContactById(@PathVariable Long id) {
         return contactService.getById(id);
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Update a contact by ID")
     @PutMapping("/{id}")
     public ContactResponse updateContact(
@@ -61,7 +58,6 @@ public class ContactController {
         return contactService.update(id, request);
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Delete a contact by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

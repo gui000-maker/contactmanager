@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@ApiErrorResponses
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Users", description = "Operations related to users")
@@ -29,7 +30,6 @@ public class UserController {
         return userService.getAll(pageable);
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Create a new user")
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
@@ -42,14 +42,12 @@ public class UserController {
                 .body(created);
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Get a user by ID")
     @GetMapping("/{id}")
     public UserResponse getUserById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
-    @ApiErrorResponses
     @Operation(summary = "Delete a user by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
