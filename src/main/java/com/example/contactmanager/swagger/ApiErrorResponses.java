@@ -11,8 +11,18 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponses({
         @ApiResponse(
+                responseCode = "400",
+                description = "Validation error",
+                content = @Content(schema = @Schema(implementation = ApiError.class))
+        ),
+        @ApiResponse(
                 responseCode = "401",
                 description = "Unauthorized",
+                content = @Content(schema = @Schema(implementation = ApiError.class))
+        ),
+        @ApiResponse(
+                responseCode = "404",
+                description = "Resource not found",
                 content = @Content(schema = @Schema(implementation = ApiError.class))
         ),
         @ApiResponse(
@@ -26,5 +36,4 @@ import java.lang.annotation.*;
                 content = @Content(schema = @Schema(implementation = ApiError.class))
         )
 })
-public @interface ApiErrorResponses {
-}
+public @interface ApiErrorResponses {}
