@@ -1,4 +1,4 @@
-package com.example.contactmanager.service;
+package com.example.contactmanager.security;
 
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.repository.UserRepository;

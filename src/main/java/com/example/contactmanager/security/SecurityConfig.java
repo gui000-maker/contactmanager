@@ -1,4 +1,4 @@
-package com.example.contactmanager.config;
+package com.example.contactmanager.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
