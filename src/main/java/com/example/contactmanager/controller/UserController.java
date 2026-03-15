@@ -3,6 +3,7 @@ package com.example.contactmanager.controller;
 import com.example.contactmanager.dto.UserRequest;
 import com.example.contactmanager.dto.UserResponse;
 import com.example.contactmanager.service.UserService;
+import com.example.contactmanager.swagger.ApiErrorResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ public class UserController {
     }
 
     @PostMapping
+    @ApiErrorResponses
     @Operation(summary = "Create a new user")
     public ResponseEntity<UserResponse> createUser(
             @Valid @RequestBody UserRequest request
@@ -42,12 +44,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @ApiErrorResponses
     @Operation(summary = "Get a user by ID")
     public UserResponse getUserById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
     @DeleteMapping("/{id}")
+    @ApiErrorResponses
     @Operation(summary = "Delete a user by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {

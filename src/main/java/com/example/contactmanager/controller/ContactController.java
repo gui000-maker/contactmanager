@@ -3,6 +3,7 @@ package com.example.contactmanager.controller;
 import com.example.contactmanager.dto.ContactRequest;
 import com.example.contactmanager.dto.ContactResponse;
 import com.example.contactmanager.service.ContactService;
+import com.example.contactmanager.swagger.ApiErrorResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ public class ContactController {
     }
 
     @PostMapping
+    @ApiErrorResponses
     @Operation(summary = "Create a new contact")
     public ResponseEntity<ContactResponse> createContact(
             @Valid @RequestBody ContactRequest request
@@ -36,18 +38,21 @@ public class ContactController {
     }
 
     @GetMapping
+    @ApiErrorResponses
     @Operation(summary = "Get all contacts")
     public Page<ContactResponse> getAllContacts(Pageable pageable) {
         return contactService.getAll(pageable);
     }
 
     @GetMapping("/{id}")
+    @ApiErrorResponses
     @Operation(summary = "Get a contact by ID")
     public ContactResponse getContactById(@PathVariable Long id) {
         return contactService.getById(id);
     }
 
     @PutMapping("/{id}")
+    @ApiErrorResponses
     @Operation(summary = "Update a contact by ID")
     public ContactResponse updateContact(
             @PathVariable Long id,
@@ -57,6 +62,7 @@ public class ContactController {
     }
 
     @DeleteMapping("/{id}")
+    @ApiErrorResponses
     @Operation(summary = "Delete a contact by ID")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteContact(@PathVariable Long id) {
