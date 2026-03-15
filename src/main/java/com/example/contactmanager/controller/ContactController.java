@@ -24,9 +24,9 @@ public class ContactController {
         this.contactService = contactService;
     }
 
-    @PostMapping
     @ApiErrorResponses
     @Operation(summary = "Create a new contact")
+    @PostMapping
     public ResponseEntity<ContactResponse> createContact(
             @Valid @RequestBody ContactRequest request
     ) {
@@ -37,23 +37,23 @@ public class ContactController {
                 .body(created);
     }
 
-    @GetMapping
     @ApiErrorResponses
     @Operation(summary = "Get all contacts")
+    @GetMapping
     public Page<ContactResponse> getAllContacts(Pageable pageable) {
         return contactService.getAll(pageable);
     }
 
-    @GetMapping("/{id}")
     @ApiErrorResponses
     @Operation(summary = "Get a contact by ID")
+    @GetMapping("/{id}")
     public ContactResponse getContactById(@PathVariable Long id) {
         return contactService.getById(id);
     }
 
-    @PutMapping("/{id}")
     @ApiErrorResponses
     @Operation(summary = "Update a contact by ID")
+    @PutMapping("/{id}")
     public ContactResponse updateContact(
             @PathVariable Long id,
             @Valid @RequestBody ContactRequest request
@@ -61,9 +61,9 @@ public class ContactController {
         return contactService.update(id, request);
     }
 
-    @DeleteMapping("/{id}")
     @ApiErrorResponses
     @Operation(summary = "Delete a contact by ID")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteContact(@PathVariable Long id) {
         contactService.delete(id);
