@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
+@Schema(name = "UserResponse", description = "Response for a user")
 public record UserResponse(
         @Schema(description = "ID of the user", example = "1")
         Long id,

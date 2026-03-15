@@ -3,6 +3,7 @@ package com.example.contactmanager.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
+@Schema(name = "ContactRequest", description = "Request to create a new contact")
 public record ContactRequest(
 
         @Schema(description = "Name of the contact", example = "John Doe")

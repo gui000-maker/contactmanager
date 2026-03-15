@@ -3,6 +3,7 @@ package com.example.contactmanager.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
+@Schema(name = "ContactResponse", description = "Response for a contact")
 public record ContactResponse(
 
         @Schema(description = "ID of the contact", example = "1")

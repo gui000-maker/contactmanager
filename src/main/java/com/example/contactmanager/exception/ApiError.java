@@ -3,6 +3,7 @@ package com.example.contactmanager.exception;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
+@Schema(name = "ApiError", description = "Standard API error response")
 public record ApiError(
 
         @Schema(description = "HTTP status code", example = "404")
