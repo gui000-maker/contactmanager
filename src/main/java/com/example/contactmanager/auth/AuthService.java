@@ -31,9 +31,6 @@ public class AuthService {
         logger.debug("Attempting to register user: {}", request.username());
 
         if (userRepository.existsByUsername(request.username())) {
-
-            logger.warn("Registration failed: username already exists");
-
             throw new IllegalArgumentException("Username already exists");
         }
 
