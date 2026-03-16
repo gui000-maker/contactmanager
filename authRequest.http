@@ -1,0 +1,48 @@
+### Register User
+
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser1",
+  "password": "12345678"
+}
+
+### Register Duplicate User (Should return 409)
+
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser1",
+  "password": "12345678"
+}
+
+### Register Validation Error (Password too short)
+
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser2",
+  "password": "123"
+}
+
+### Login User (Basic Auth)
+
+POST http://localhost:8080/api/auth/login
+Authorization: Basic dGVzdHVzZXIxOjEyMzQ1Njc4
+
+### Access Protected Endpoint (Example: Contacts)
+
+GET http://localhost:8080/contacts
+Authorization: Basic dGVzdHVzZXIxOjEyMzQ1Njc4
+
+### Access Protected Endpoint Without Auth (Should return 401)
+
+GET http://localhost:8080/contacts
+
+### Trigger Unauthorized Login
+
+POST http://localhost:8080/api/auth/login
+Authorization: Basic d3Jvbmd1c2VyOndyb25ncGFzcw==
