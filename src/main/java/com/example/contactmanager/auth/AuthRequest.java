@@ -1,4 +1,4 @@
-package com.example.contactmanager.dto;
+package com.example.contactmanager.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;

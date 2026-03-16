@@ -1,9 +1,10 @@
-package com.example.contactmanager.dto;
+package com.example.contactmanager.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "AuthResponse", description = "Response for authentication")
 public record AuthResponse(
+
         @Schema(description = "Username for authentication", example = "john")
         String username,
 
