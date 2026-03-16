@@ -39,6 +39,8 @@ public class AuthService {
                 passwordEncoder.encode(request.password())
         );
 
+        user.setRole("USER");
+
         User saved = userRepository.save(user);
 
         logger.info("User successfully registered: {}", saved.getUsername());
