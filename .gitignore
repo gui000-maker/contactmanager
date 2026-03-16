@@ -26,9 +26,6 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-UserRequest.http
-authRequest.http
-requests.http
 
 ### NetBeans ###
 /nbproject/private/
