@@ -28,6 +28,15 @@ public class JwtService {
         this.expiration = expiration;
     }
 
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key)
+                .compact();
+    }
+
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }

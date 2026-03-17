@@ -3,8 +3,10 @@ package com.example.contactmanager.auth;
 import com.example.contactmanager.dto.UserRequest;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.repository.UserRepository;
+import com.example.contactmanager.security.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,13 +19,34 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public AuthService(
             UserRepository userRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+    }
+
+    public AuthResponse login(UserRequest request) {
+
+        logger.debug("Attempting login for user: {}", request.username());
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.username(),
+                        request.password()
+                )
+        );
+
+        String token = jwtService.generateToken(request.username());
+
+        logger.info("User logged in successfully: {}", request.username());
+
+        return new AuthResponse(request.username(), token);
     }
 
     public AuthResponse register(UserRequest request) {
@@ -43,11 +66,13 @@ public class AuthService {
 
         User saved = userRepository.save(user);
 
+        String token = jwtService.generateToken(saved.getUsername());
+
         logger.info("User successfully registered: {}", saved.getUsername());
 
         return new AuthResponse(
                 saved.getUsername(),
-                "User registered successfully"
+                token
         );
     }
 }

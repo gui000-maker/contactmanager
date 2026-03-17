@@ -8,6 +8,9 @@ public record AuthResponse(
         @Schema(description = "Username for authentication", example = "john")
         String username,
 
-        @Schema(description = "Message for authentication", example = "Authentication successful")
-        String message
+        @Schema(
+                description = "JWT token used for authenticated requests",
+                example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        )
+        String token
 ) {}
