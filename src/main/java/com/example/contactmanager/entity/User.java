@@ -1,5 +1,6 @@
 package com.example.contactmanager.entity;
 
+import com.example.contactmanager.security.Role;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,7 +22,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -29,9 +32,10 @@ public class User {
 
     protected User() {}
 
-    public User(String username, String password) {
+    public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     @Override
@@ -49,7 +53,7 @@ public class User {
         return username;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
@@ -69,7 +73,7 @@ public class User {
         this.password = password;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
