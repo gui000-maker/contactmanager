@@ -3,21 +3,23 @@ package com.example.contactmanager.security;
 import com.example.contactmanager.exception.ApiError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
+import org.antlr.v4.runtime.misc.ObjectEqualityComparator;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-/**
- * Utility class to write consistent API error responses.
- */
+@Component
 public class ErrorResponseWriter {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    private ErrorResponseWriter() {}
+    private ErrorResponseWriter(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
-    public static void write(
+    public void write(
             HttpServletResponse response,
             HttpStatus status,
             String message,

@@ -19,13 +19,16 @@ import java.io.IOException;
 
         private final JwtService jwtService;
         private final UserDetailsService userDetailsService;
+        private final ErrorResponseWriter errorResponseWriter;
 
         public JwtAuthenticationFilter(
                 JwtService jwtService,
-                UserDetailsService userDetailsService
+                UserDetailsService userDetailsService,
+                ErrorResponseWriter errorResponseWriter
         ) {
             this.jwtService = jwtService;
             this.userDetailsService = userDetailsService;
+            this.errorResponseWriter = errorResponseWriter;
         }
 
         @Override
@@ -68,7 +71,7 @@ import java.io.IOException;
 
                 logger.warn("JWT authentication failed: {}", ex.getMessage());
 
-                ErrorResponseWriter.write(
+                errorResponseWriter.write(
                         response,
                         HttpStatus.UNAUTHORIZED,
                         "Invalid or expired token",
