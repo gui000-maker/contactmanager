@@ -1,6 +1,7 @@
 package com.example.contactmanager.exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -109,9 +110,6 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
     }
-
-    @ExceptionHandler(ExpiredJwtException.class)
-
 
     private String formatFieldError(FieldError error) {
         return error.getField() + ": " + error.getDefaultMessage();

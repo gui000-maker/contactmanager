@@ -2,6 +2,8 @@ package com.example.contactmanager.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +13,9 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private final Key key;
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
+    private final Key key;
     private final String secret;
     private final long expiration;
 
@@ -47,8 +50,10 @@ public class JwtService {
             String extracted = extractUsername(token);
             return extracted.equals(username);
         } catch (ExpiredJwtException ex) {
+            logger.warn("Expired JWT: {}", ex.getMessage());
             throw ex;
         } catch (JwtException ex) {
+            logger.warn("JWT error: {}", ex.getMessage());
             throw ex;
         }
     }
