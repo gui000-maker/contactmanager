@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
@@ -67,21 +68,12 @@ import java.io.IOException;
 
                 logger.warn("JWT authentication failed: {}", ex.getMessage());
 
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-
-                String body = """
-        {
-          "status": 401,
-          "error": "Unauthorized",
-          "message": "Invalid or expired token",
-          "path": "%s"
-        }
-        """.formatted(request.getRequestURI());
-
-                response.getWriter().write(body);
-                response.getWriter().flush();
+                ErrorResponseWriter.write(
+                        response,
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid or expired token",
+                        request.getRequestURI()
+                );
 
                 return;
             }
