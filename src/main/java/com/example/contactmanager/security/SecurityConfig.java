@@ -1,8 +1,8 @@
 package com.example.contactmanager.security;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -22,11 +22,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ErrorResponseWriter errorResponseWriter;
 
     public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            ErrorResponseWriter errorResponseWriter
     ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.errorResponseWriter = errorResponseWriter;
     }
 
     @Bean
@@ -39,33 +42,22 @@ public class SecurityConfig {
                 )
 
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json");
-
-                            response.getWriter().write("""
-                                    {
-                                      "status": 401,
-                                      "error": "Unauthorized",
-                                      "message": "Authentication required",
-                                      "path": "%s"
-                                    }
-                                    """.formatted(request.getRequestURI()));
-                        })
-
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.setContentType("application/json");
-
-                            response.getWriter().write("""
-                                    {
-                                      "status": 403,
-                                      "error": "Forbidden",
-                                      "message": "Access denied",
-                                      "path": "%s"
-                                    }
-                                    """.formatted(request.getRequestURI()));
-                        })
+                        .authenticationEntryPoint((request, response, exAuth) ->
+                                errorResponseWriter.write(
+                                        response,
+                                        HttpStatus.UNAUTHORIZED,
+                                        "Unauthorized",
+                                        request.getRequestURI()
+                                )
+                        )
+                        .accessDeniedHandler((request, response, exDenied) ->
+                                errorResponseWriter.write(
+                                        response,
+                                        HttpStatus.FORBIDDEN,
+                                        "Access denied",
+                                        request.getRequestURI()
+                                )
+                        )
                 )
 
                 .authorizeHttpRequests(auth -> auth
