@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@PreAuthorize("hasRole('ADMIN')")
 @ApiErrorResponses
 @RestController
 @RequestMapping("/users")
@@ -26,14 +27,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public Page<UserResponse> getAllUsers(Pageable pageable) {
         return userService.getAll(pageable);
     }
 
-
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create a new user")
     @PostMapping
     public ResponseEntity<UserResponse> createUser(
@@ -46,14 +44,12 @@ public class UserController {
                 .body(created);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get a user by ID")
     @GetMapping("/{id}")
     public UserResponse getUserById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete a user by ID")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
