@@ -28,34 +28,24 @@ public class JwtService {
         this.expiration = expiration;
     }
 
-    public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
     public String extractUsername(String token) {
         return getClaims(token).getSubject();
     }
 
     public boolean isValid(String token, String username) {
-        if (token == null || token.isEmpty()) {
-            throw new IllegalArgumentException("Token cannot be empty");
+        if (token == null || token.isBlank()) {
+            return false;
         }
 
-        try {
-            String extracted = extractUsername(token);
-            return extracted.equals(username);
-        } catch (ExpiredJwtException ex) {
-            logger.warn("Expired JWT: {}", ex.getMessage());
-            throw ex;
-        } catch (JwtException ex) {
-            logger.warn("JWT error: {}", ex.getMessage());
-            throw ex;
-        }
+        String extractedUsername = extractUsername(token);
+
+        return extractedUsername.equals(username) && !isExpired(token);
+    }
+
+    private boolean isExpired(String token) {
+        return getClaims(token)
+                .getExpiration()
+                .before(new Date());
     }
 
     private Claims getClaims(String token) {
