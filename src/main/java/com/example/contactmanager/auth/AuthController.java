@@ -6,13 +6,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @ApiErrorResponses
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "Authentication", description = "Operations related to authentication")
+@Tag(name = "Authentication", description = "Auth operations")
 public class AuthController {
 
     private final AuthService authService;
@@ -26,20 +25,16 @@ public class AuthController {
     public ResponseEntity<AuthResponse> register(
             @Valid @RequestBody UserRequest request
     ) {
-
-        AuthResponse response = authService.register(request);
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(response);
+                .body(authService.register(request));
     }
 
-    @Operation(summary = "Login using Basic Authentication")
+    @Operation(summary = "Login and receive JWT token")
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(Authentication authentication) {
-
-        return ResponseEntity.ok(
-                new AuthResponse(authentication.getName(), "Login successful")
-        );
+    public ResponseEntity<AuthResponse> login(
+            @Valid @RequestBody UserRequest request
+    ) {
+        return ResponseEntity.ok(authService.login(request));
     }
 }
