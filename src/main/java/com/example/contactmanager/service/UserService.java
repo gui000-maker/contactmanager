@@ -4,6 +4,7 @@ import com.example.contactmanager.dto.UserResponse;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.dto.UserRequest;
 import com.example.contactmanager.exception.ResourceNotFoundException;
+import com.example.contactmanager.security.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,8 @@ public class UserService {
                 request.username(),
                 passwordEncoder.encode(request.password())
         );
+
+        user.setRole(Role.ROLE_USER);
 
         User saved = userRepository.save(user);
 

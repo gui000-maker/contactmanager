@@ -2,6 +2,7 @@ package com.example.contactmanager.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
+import org.springframework.context.annotation.Role;
 
 @Schema(name = "UserRequest", description = "Request to create a new user")
 public record UserRequest (
@@ -14,6 +15,11 @@ public record UserRequest (
         @Schema(description = "Password of the user", example = "password123")
         @NotBlank(message = "Password cannot be empty")
         @Size(min = 8, message = "Password must be at least 8 characters")
-        String password
-) {
-}
+        String password,
+
+        @Schema(
+                description = "Role assigned to the user",
+                example = "ROLE_USER"
+        )
+        Role role
+) {}

@@ -1,5 +1,6 @@
 package com.example.contactmanager.dto;
 
+import com.example.contactmanager.security.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -12,8 +13,8 @@ public record UserResponse(
         @Schema(description = "Username of the user", example = "john_doe")
         String username,
 
-        @Schema(description = "Role of the user", example = "ADMIN")
-        String role,
+        @Schema(description = "Role of the user", example = "ROLE_USER")
+        Role role,
 
         @Schema(description = "Creation date of the user", example = "2023-07-25T12:00:00")
         LocalDateTime createdAt

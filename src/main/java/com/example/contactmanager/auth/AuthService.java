@@ -4,6 +4,7 @@ import com.example.contactmanager.dto.UserRequest;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.repository.UserRepository;
 import com.example.contactmanager.security.JwtService;
+import com.example.contactmanager.security.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,7 +67,7 @@ public class AuthService {
                 passwordEncoder.encode(request.password())
         );
 
-        user.setRole("USER");
+        user.setRole(Role.ROLE_USER);
 
         User saved = userRepository.save(user);
 
