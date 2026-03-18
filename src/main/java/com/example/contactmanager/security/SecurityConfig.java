@@ -86,9 +86,8 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(
             JwtService jwtService,
-            UserDetailsService userDetailsService,
-            ErrorResponseWriter errorWriter
+            UserDetailsService userDetailsService
     ) {
-        return new JwtAuthenticationFilter(jwtService, userDetailsService, errorWriter);
+        return new JwtAuthenticationFilter(jwtService, userDetailsService);
     }
 }
