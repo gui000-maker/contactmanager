@@ -23,7 +23,7 @@ public class AuthController {
     @Operation(summary = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(
-            @Valid @RequestBody UserRequest request
+            @Valid @RequestBody RegisterRequest request
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -33,7 +33,7 @@ public class AuthController {
     @Operation(summary = "Login and receive JWT token")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @Valid @RequestBody UserRequest request
+            @Valid @RequestBody AuthRequest request
     ) {
         return ResponseEntity.ok(authService.login(request));
     }

@@ -1,6 +1,5 @@
 package com.example.contactmanager.auth;
 
-import com.example.contactmanager.dto.UserRequest;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.repository.UserRepository;
 import com.example.contactmanager.security.JwtService;
@@ -36,7 +35,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthResponse login(UserRequest request) {
+    public AuthResponse login(AuthRequest request) {
 
         logger.debug("Attempting login for user: {}", request.username());
 
@@ -54,7 +53,7 @@ public class AuthService {
         return new AuthResponse(request.username(), token);
     }
 
-    public AuthResponse register(UserRequest request) {
+    public AuthResponse register(RegisterRequest request) {
 
         logger.debug("Attempting to register user: {}", request.username());
 
