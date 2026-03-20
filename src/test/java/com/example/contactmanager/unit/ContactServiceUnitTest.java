@@ -109,12 +109,13 @@ public class ContactServiceUnitTest {
     }
 
     @Test
-    void searchByName_shouldReturnEmptyPage_whenNameIsNotBlank() {
-        Page<ContactResponse> result = contactService.searchByName("John", Pageable.unpaged());
+    void searchByName_shouldCallRepository_whenNameIsNotBlank() {
+        when(contactRepository.findByNameContainingIgnoreCase(eq("John"), any(Pageable.class)))
+                .thenReturn(Page.empty());
 
-        assertThat(result).isEmpty();
-        // verify repository was never called — non-blank input should not short-circuit
-        verifyNoInteractions(contactRepository);
+        contactService.searchByName("John", Pageable.unpaged());
+
+        verify(contactRepository).findByNameContainingIgnoreCase(eq("John"), any(Pageable.class));
     }
 
     @Test
