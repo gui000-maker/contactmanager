@@ -14,6 +14,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for user management.
+ *
+ * <p>All endpoints are restricted to users with ROLE_ADMIN,
+ * enforced via {@literal @}PreAuthorize at the class level.
+ * Non-admin authenticated users will receive a 403 response.</p>
+ *
+ * <p>Error response format is standardized via
+ * {@link com.example.contactmanager.swagger.ApiErrorResponses}
+ * and handled at runtime by the global exception handler and
+ * security config entry points.</p>
+ */
 @PreAuthorize("hasRole('ADMIN')")
 @ApiErrorResponses
 @RestController
@@ -27,6 +39,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(summary = "Get all users")
     @GetMapping
     public Page<UserResponse> getAllUsers(Pageable pageable) {
         return userService.getAll(pageable);

@@ -13,6 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for contact management.
+ *
+ * <p>All endpoints require authentication. Error response format
+ * is standardized via {@link com.example.contactmanager.swagger.ApiErrorResponses}
+ * and handled at runtime by the global exception handler and
+ * security config entry points.</p>
+ */
 @ApiErrorResponses
 @RestController
 @RequestMapping("/contacts")
