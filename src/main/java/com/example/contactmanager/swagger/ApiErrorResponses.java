@@ -51,6 +51,26 @@ import java.lang.annotation.*;
         ),
 
         @ApiResponse(
+                responseCode = "403",
+                description = "Forbidden - Insufficient permissions",
+                content = @Content(
+                        schema = @Schema(implementation = ApiError.class),
+                        examples = @ExampleObject(
+                                name = "ForbiddenExample",
+                                value = """
+            {
+              "status": 403,
+              "error": "Forbidden",
+              "message": "You do not have permission to access this resource",
+              "path": "/contacts",
+              "timestamp": "2026-03-15T20:15:30"
+            }
+            """
+                        )
+                )
+        ),
+
+        @ApiResponse(
                 responseCode = "404",
                 description = "Resource not found",
                 content = @Content(
