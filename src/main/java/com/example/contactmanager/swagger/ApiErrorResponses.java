@@ -30,9 +30,9 @@ import java.lang.annotation.*;
  *
  * <p>Usage:</p>
  * <pre>
- *   {@literal @}GetMapping("/contacts")
- *   {@literal @}ApiErrorResponses
- *   public ResponseEntity&lt;List&lt;ContactResponse&gt;&gt; getAll() { ... }
+ * {@literal @}ApiErrorResponses
+ * {@literal @}RequestMapping("/contacts")
+ *  public class ContactController { ... }
  * </pre>
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
