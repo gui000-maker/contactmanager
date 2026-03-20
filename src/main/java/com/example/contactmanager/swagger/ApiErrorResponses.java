@@ -6,6 +6,35 @@ import io.swagger.v3.oas.annotations.responses.*;
 
 import java.lang.annotation.*;
 
+/**
+ * Composite Swagger annotation that documents standard error responses
+ * shared across all secured endpoints in this API.
+ *
+ * <p>Apply at method or class level on controllers to avoid repeating
+ * error response definitions on every endpoint.</p>
+ *
+ * <p>Documented responses:</p>
+ * <ul>
+ *   <li>400 - Validation failed (e.g. invalid email format)</li>
+ *   <li>401 - No valid JWT token provided</li>
+ *   <li>403 - Authenticated but insufficient permissions</li>
+ *   <li>404 - Requested resource not found</li>
+ *   <li>409 - Resource conflict (e.g. duplicate contact)</li>
+ *   <li>500 - Unexpected server error</li>
+ * </ul>
+ *
+ * <p><b>Note:</b> This annotation is documentation only. Runtime behavior
+ * for 401/403 is handled by {@link com.example.contactmanager.security.SecurityConfig}
+ * via the authentication entry point and access denied handler.
+ * All other errors are handled by the global exception handler.</p>
+ *
+ * <p>Usage:</p>
+ * <pre>
+ *   {@literal @}GetMapping("/contacts")
+ *   {@literal @}ApiErrorResponses
+ *   public ResponseEntity&lt;List&lt;ContactResponse&gt;&gt; getAll() { ... }
+ * </pre>
+ */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ApiResponses({
