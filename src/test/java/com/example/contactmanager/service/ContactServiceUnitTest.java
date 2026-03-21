@@ -1,11 +1,10 @@
-package com.example.contactmanager.unit;
+package com.example.contactmanager.service;
 
 import com.example.contactmanager.dto.ContactRequest;
 import com.example.contactmanager.dto.ContactResponse;
 import com.example.contactmanager.entity.Contact;
 import com.example.contactmanager.exception.ResourceNotFoundException;
 import com.example.contactmanager.repository.ContactRepository;
-import com.example.contactmanager.service.ContactService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
