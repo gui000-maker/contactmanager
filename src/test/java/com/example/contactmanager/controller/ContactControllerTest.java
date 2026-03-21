@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class ContactControllerUnitTest {
 
@@ -43,5 +45,23 @@ class ContactControllerUnitTest {
                 .andExpect(jsonPath("$.age").value(25))
                 .andExpect(jsonPath("$.email").value("john@example.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("123456789"));
+    }
+
+    @Test
+    void createContactShouldReturnBadRequest_whenInvalidRequest() throws Exception {
+        var requestJson = """
+            {"name": "John", "email": "invalid-email", "age": 25, "phoneNumber": "123456789"}
+            """;
+
+        mockMvc.perform(post("/contacts")
+                        .contentType("application/json")
+                        .content(requestJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getContactById_shouldReturn404_whenNotFound() throws Exception {
+        mockMvc.perform(get("/contacts/999"))
+                .andExpect(status().isNotFound());
     }
 }
