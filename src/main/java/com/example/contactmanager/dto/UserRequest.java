@@ -1,8 +1,8 @@
 package com.example.contactmanager.dto;
 
+import com.example.contactmanager.security.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
-import org.springframework.context.annotation.Role;
 
 @Schema(name = "UserRequest", description = "Request to create a new user")
 public record UserRequest (
