@@ -2,6 +2,7 @@ package com.example.contactmanager.controller;
 
 import com.example.contactmanager.dto.ContactResponse;
 import com.example.contactmanager.exception.GlobalExceptionHandler;
+import com.example.contactmanager.exception.ResourceNotFoundException;
 import com.example.contactmanager.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class ContactControllerUnitTest {
         ContactController controller = new ContactController(contactService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setValidator(new LocalValidatorFactoryBean())
-                .setControllerAdvice(new GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler()) // ← add this
                 .build();
     }
 
@@ -66,6 +67,9 @@ class ContactControllerUnitTest {
 
     @Test
     void getContactById_shouldReturn404_whenNotFound() throws Exception {
+        when(contactService.getById(999L))
+                .thenThrow(new ResourceNotFoundException("Contact not found with id: 999"));
+
         mockMvc.perform(get("/contacts/999"))
                 .andExpect(status().isNotFound());
     }

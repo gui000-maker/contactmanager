@@ -2,6 +2,7 @@ package com.example.contactmanager.controller;
 
 import com.example.contactmanager.dto.UserResponse;
 import com.example.contactmanager.exception.GlobalExceptionHandler;
+import com.example.contactmanager.exception.ResourceNotFoundException;
 import com.example.contactmanager.security.Role;
 import com.example.contactmanager.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +67,8 @@ class UserControllerUnitTest {
 
     @Test
     void getUserById_shouldReturn404_whenNotFound() throws Exception {
-        when(userService.findById(999L)).thenReturn(null);
+        when(userService.findById(999L))
+                .thenThrow(new ResourceNotFoundException("User not found with id: 999"));
 
         mockMvc.perform(get("/users/999"))
                 .andExpect(status().isNotFound());
