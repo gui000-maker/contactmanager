@@ -1,6 +1,7 @@
 package com.example.contactmanager.controller;
 
 import com.example.contactmanager.dto.UserResponse;
+import com.example.contactmanager.exception.GlobalExceptionHandler;
 import com.example.contactmanager.security.Role;
 import com.example.contactmanager.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,7 @@ class UserControllerUnitTest {
         UserController controller = new UserController(userService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setValidator(new LocalValidatorFactoryBean())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
@@ -53,7 +55,7 @@ class UserControllerUnitTest {
     @Test
     void createUserShouldReturnBadRequest_whenInvalidRequest() throws Exception {
         var requestJson = """
-            {"username": "", "password": ""}
+            {"username": "Alice", "password": ""}
             """;
 
         mockMvc.perform(post("/users")
@@ -64,6 +66,8 @@ class UserControllerUnitTest {
 
     @Test
     void getUserById_shouldReturn404_whenNotFound() throws Exception {
+        when(userService.findById(999L)).thenReturn(null);
+
         mockMvc.perform(get("/users/999"))
                 .andExpect(status().isNotFound());
     }

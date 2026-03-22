@@ -1,6 +1,7 @@
 package com.example.contactmanager.controller;
 
 import com.example.contactmanager.dto.ContactResponse;
+import com.example.contactmanager.exception.GlobalExceptionHandler;
 import com.example.contactmanager.service.ContactService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ class ContactControllerUnitTest {
         ContactController controller = new ContactController(contactService);
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setValidator(new LocalValidatorFactoryBean())
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
 
