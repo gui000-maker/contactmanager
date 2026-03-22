@@ -1,6 +1,5 @@
 package com.example.contactmanager.dto;
 
-import com.example.contactmanager.security.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
@@ -15,11 +14,5 @@ public record UserRequest (
         @Schema(description = "Password of the user", example = "password123")
         @NotBlank(message = "Password cannot be empty")
         @Size(min = 8, message = "Password must be at least 8 characters")
-        String password,
-
-        @Schema(
-                description = "Role assigned to the user",
-                example = "ROLE_USER"
-        )
-        Role role
+        String password
 ) {}

@@ -61,7 +61,7 @@ public class UserService {
 
         User user = new User(
                 request.username(),
-                passwordEncoder.encode(request.password()) // raw password is hashed here, never stored plain
+                passwordEncoder.encode(request.password())// raw password is hashed here, never stored plain
         );
 
         user.setRole(Role.ROLE_USER);
