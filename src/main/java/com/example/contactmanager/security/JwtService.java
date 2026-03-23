@@ -96,9 +96,12 @@ public class JwtService {
             return false;
         }
 
-        String extractedUsername = extractUsername(token);
-
-        return extractedUsername.equals(username) && !isExpired(token);
+        try {
+            String extractedUsername = extractUsername(token);
+            return extractedUsername.equals(username) && !isExpired(token);
+        } catch (JwtException e) {
+            return false; // expired, malformed or invalid signature
+        }
     }
 
     /**
