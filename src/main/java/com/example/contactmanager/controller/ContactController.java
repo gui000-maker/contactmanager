@@ -72,4 +72,13 @@ public class ContactController {
     public void deleteContact(@PathVariable Long id) {
         contactService.delete(id);
     }
+
+    @Operation(summary = "Search for contacts by name")
+    @GetMapping("/search")
+    public Page<ContactResponse> searchContacts(
+            @RequestParam String name,
+            Pageable pageable
+    ) {
+        return contactService.searchByName(name, pageable);
+    }
 }
