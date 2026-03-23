@@ -79,7 +79,6 @@ public class ContactController {
             @RequestParam String name,
             Pageable pageable
     ) {
-        System.out.println("Searching for contacts with name: " + name);
         return contactService.searchByName(name, pageable);
     }
 }
