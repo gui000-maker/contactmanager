@@ -6,9 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 @Schema(description = "Authentication response containing access and refresh tokens")
 public record AuthResponse(
 
-        @Schema(description = "Username for authentication", example = "john")
-        String username,
-
         @NotBlank
         @Schema(
                 description = "JWT access token used for authenticated requests",
