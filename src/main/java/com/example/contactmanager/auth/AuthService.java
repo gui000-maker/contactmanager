@@ -1,9 +1,11 @@
 package com.example.contactmanager.auth;
 
+import com.example.contactmanager.entity.RefreshToken;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.repository.UserRepository;
 import com.example.contactmanager.security.JwtService;
 import com.example.contactmanager.security.Role;
+import com.example.contactmanager.service.RefreshTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,17 +26,21 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
-            AuthenticationManager authenticationManager
+            AuthenticationManager authenticationManager,
+            RefreshTokenService refreshTokenService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.refreshTokenService = refreshTokenService;
+
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -50,11 +56,12 @@ public class AuthService {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+        RefreshToken refreshToken = refreshTokenService.create(userDetails.getUsername());
         String token = jwtService.generateToken(userDetails.getUsername());
 
         logger.info("User logged in successfully: {}", userDetails.getUsername());
 
-        return new AuthResponse(request.username(), token);
+        return new AuthResponse(token, refreshToken.getToken());
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -76,11 +83,14 @@ public class AuthService {
 
         String token = jwtService.generateToken(saved.getUsername());
 
+        RefreshToken refreshToken = refreshTokenService.create(saved.getUsername());
+
         logger.info("User successfully registered: {}", saved.getUsername());
 
+        // register → immediately returns tokens
         return new AuthResponse(
-                saved.getUsername(),
-                token
+                token,
+                refreshToken.getToken()
         );
     }
 }
