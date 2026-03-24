@@ -15,7 +15,7 @@ public class JwtServiceTest {
 
     @BeforeEach
     void setUp() {
-        expiration = 86400000L;
+        expiration = 900000L;
         jwtService = new JwtService(
                 "test-secret-key-must-be-at-least-32-characters",
                 expiration
