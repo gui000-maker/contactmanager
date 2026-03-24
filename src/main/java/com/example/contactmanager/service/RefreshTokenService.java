@@ -3,6 +3,7 @@ package com.example.contactmanager.service;
 import com.example.contactmanager.entity.RefreshToken;
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.exception.ResourceNotFoundException;
+import com.example.contactmanager.exception.TokenExpiredException;
 import com.example.contactmanager.repository.RefreshTokenRepository;
 import com.example.contactmanager.repository.UserRepository;
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class RefreshTokenService {
 
         if (refreshToken.getExpiresAt().isBefore(Instant.now())) {
             refreshTokenRepository.delete(refreshToken);
-            throw new IllegalArgumentException("Refresh token expired — please log in again");
+            throw new TokenExpiredException("Refresh token expired — please log in again");
         }
 
         return refreshToken;
