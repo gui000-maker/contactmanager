@@ -24,16 +24,19 @@ import java.util.UUID;
 @Transactional
 public class RefreshTokenService {
 
-    @Value("${jwt.refresh-expiration}")
-    private long refreshExpiration;
+    private final long refreshExpiration;
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshTokenService.class);
-    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository) {
+
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository,
+                               UserRepository userRepository,
+                               @Value("${jwt.refresh-expiration}") long refreshExpiration) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.userRepository = userRepository;
+        this.refreshExpiration = refreshExpiration;
     }
 
     /**
