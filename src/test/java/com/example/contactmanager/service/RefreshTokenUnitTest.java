@@ -32,15 +32,15 @@ class RefreshTokenServiceUnitTest {
 
     private RefreshTokenService refreshTokenService;
 
-    private long expiration;
+    private long refreshExpiration;
 
     @BeforeEach
     void setUp() {
-        expiration = 604800000L;
+        refreshExpiration = 604800000L;
         refreshTokenService = new RefreshTokenService(
                 refreshTokenRepository,
                 userRepository,
-                expiration
+                refreshExpiration
         );
     }
 
@@ -107,11 +107,17 @@ class RefreshTokenServiceUnitTest {
     @Test
     void delete_shouldDeleteToken_whenUserExists() {
         User user = new User("alice", "password");
-        when(userRepository.findByUsername("alice")).thenReturn(Optional.of(user));
 
-        assertThatCode(() -> refreshTokenService.delete("alice"))
-                .doesNotThrowAnyException();
+        when(userRepository.findByUsername("alice"))
+                .thenReturn(Optional.of(user));
+        when(refreshTokenRepository.save(any()))
+                .thenAnswer(i -> i.getArgument(0));
+
+        RefreshToken result = refreshTokenService.create("alice");
 
         verify(refreshTokenRepository).deleteByUser(user);
+        verify(refreshTokenRepository).save(any());
+        assertThat(result.getToken()).isNotNull();
+        assertThat(result.getExpiresAt()).isAfter(Instant.now());
     }
 }
