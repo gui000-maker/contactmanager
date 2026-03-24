@@ -202,6 +202,26 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles expired refresh tokens.
+     * Returns 401 so the client knows to redirect to login.
+     */
+    @ExceptionHandler(TokenExpiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleTokenExpired(
+            TokenExpiredException ex,
+            HttpServletRequest request
+    ) {
+        logger.warn("Expired token: {}", ex.getMessage());
+
+        return new ApiError(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+    }
+
+    /**
      * Formats a single field validation error into a readable string.
      * Example output: {@code "email: must be a valid email"}
      *
