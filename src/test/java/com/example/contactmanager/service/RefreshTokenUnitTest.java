@@ -92,7 +92,7 @@ class RefreshTokenServiceUnitTest {
         assertThatThrownBy(() -> refreshTokenService.validate("expired-token"))
                 .isInstanceOf(TokenExpiredException.class);
 
-        verify(refreshTokenRepository).delete(token); // expired token deleted
+        verify(refreshTokenRepository).delete(token);
     }
 
     @Test
