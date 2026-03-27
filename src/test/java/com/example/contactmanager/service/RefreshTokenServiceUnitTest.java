@@ -31,8 +31,11 @@ class RefreshTokenServiceUnitTest {
     @Mock
     UserRepository userRepository;
 
-    private RefreshTokenService refreshTokenService;
+    @Mock
     private EntityManager entityManager;
+
+    private RefreshTokenService refreshTokenService;
+
 
     private long refreshExpiration;
 
