@@ -1,8 +1,6 @@
 package com.example.contactmanager.auth;
 
 import com.example.contactmanager.dto.*;
-import com.example.contactmanager.security.JwtService;
-import com.example.contactmanager.service.RefreshTokenService;
 import com.example.contactmanager.swagger.ApiErrorResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,13 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenService refreshTokenService;
-    private final JwtService jwtService;
 
-    public AuthController(AuthService authService, RefreshTokenService refreshTokenService, JwtService jwtService) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.refreshTokenService = refreshTokenService;
-        this.jwtService = jwtService;
     }
 
     @Operation(summary = "Register a new user")
