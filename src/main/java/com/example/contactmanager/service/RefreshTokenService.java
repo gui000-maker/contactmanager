@@ -6,12 +6,14 @@ import com.example.contactmanager.exception.ResourceNotFoundException;
 import com.example.contactmanager.exception.TokenExpiredException;
 import com.example.contactmanager.repository.RefreshTokenRepository;
 import com.example.contactmanager.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.rmi.MarshalledObject;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -28,14 +30,17 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
+    private final EntityManager entityManager;
 
     private static final Logger logger = LoggerFactory.getLogger(RefreshTokenService.class);
 
     public RefreshTokenService(RefreshTokenRepository refreshTokenRepository,
                                UserRepository userRepository,
+                               EntityManager entityManager,
                                @Value("${jwt.refresh-expiration}") long refreshExpiration) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.userRepository = userRepository;
+        this.entityManager = entityManager;
         this.refreshExpiration = refreshExpiration;
     }
 
@@ -51,6 +56,7 @@ public class RefreshTokenService {
 
         // delete existing refresh token if it exists
         refreshTokenRepository.deleteByUser(user);
+        entityManager.flush(); // force delete to execute before save
 
         RefreshToken refreshToken = new RefreshToken(user,
                 UUID.randomUUID().toString(),
