@@ -4,16 +4,19 @@ import com.example.contactmanager.entity.User;
 import com.example.contactmanager.repository.UserRepository;
 import com.example.contactmanager.security.JwtService;
 import com.example.contactmanager.security.Role;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -27,8 +30,6 @@ class SecurityIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
-
         // create a regular user
         User user = new User("alice", passwordEncoder.encode("password"));
         user.setRole(Role.ROLE_USER);
@@ -110,5 +111,77 @@ class SecurityIntegrationTest {
                         .contentType("application/json")
                         .content(requestJson))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldReturn200_whenRefreshingWithValidToken() throws Exception {
+        String loginJson = """
+                {"username": "alice", "password": "password"}
+                """;
+
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String refreshToken = new ObjectMapper()
+                .readTree(loginResponse)
+                .get("refreshToken")
+                .asText();
+
+        String refreshJson = String.format("""
+                {"refreshToken": "%s"}
+                """, refreshToken);
+
+        mockMvc.perform(post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(refreshJson))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists());
+    }
+
+    @Test
+    void shouldReturn404_whenRefreshingWithNonExistentToken() throws Exception {
+        String refreshJson = """
+                {"refreshToken": "00000000-0000-0000-0000-000000000000"}
+                """;
+
+        mockMvc.perform(post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(refreshJson))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturn204_whenLoggingOutWithValidToken() throws Exception {
+        String loginJson = """
+                {"username": "alice", "password": "password"}
+                """;
+
+        String loginResponse = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String refreshToken = new ObjectMapper()
+                .readTree(loginResponse)
+                .get("refreshToken")
+                .asText();
+
+        String logoutJson = String.format("""
+                {"refreshToken": "%s"}
+                """, refreshToken);
+
+        mockMvc.perform(post("/api/auth/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(logoutJson))
+                .andExpect(status().isNoContent());
     }
 }
