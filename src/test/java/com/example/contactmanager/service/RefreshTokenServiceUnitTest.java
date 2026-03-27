@@ -6,6 +6,7 @@ import com.example.contactmanager.exception.ResourceNotFoundException;
 import com.example.contactmanager.exception.TokenExpiredException;
 import com.example.contactmanager.repository.RefreshTokenRepository;
 import com.example.contactmanager.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,7 @@ class RefreshTokenServiceUnitTest {
     UserRepository userRepository;
 
     private RefreshTokenService refreshTokenService;
+    private EntityManager entityManager;
 
     private long refreshExpiration;
 
@@ -40,6 +42,7 @@ class RefreshTokenServiceUnitTest {
         refreshTokenService = new RefreshTokenService(
                 refreshTokenRepository,
                 userRepository,
+                entityManager,
                 refreshExpiration
         );
     }
