@@ -1,6 +1,7 @@
 package com.example.contactmanager.integration;
 
 import com.example.contactmanager.entity.User;
+import com.example.contactmanager.repository.RefreshTokenRepository;
 import com.example.contactmanager.repository.UserRepository;
 import com.example.contactmanager.security.JwtService;
 import com.example.contactmanager.security.Role;
@@ -27,10 +28,13 @@ class SecurityIntegrationTest {
     @Autowired MockMvc mockMvc;
     @Autowired JwtService jwtService;
     @Autowired UserRepository userRepository;
+    @Autowired RefreshTokenRepository refreshTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
+
 
     @BeforeEach
     void setUp() {
+        refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
 
         // create a regular user
