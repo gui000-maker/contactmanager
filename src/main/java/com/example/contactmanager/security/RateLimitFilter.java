@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,11 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RateLimitFilter extends OncePerRequestFilter {
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
-    private final ErrorResponseWriter errorResponseWriter;
-
-    public RateLimitFilter(ErrorResponseWriter errorResponseWriter) {
-        this.errorResponseWriter = errorResponseWriter;
-    }
 
     @Override
     protected void doFilterInternal(
@@ -49,12 +45,18 @@ public class RateLimitFilter extends OncePerRequestFilter {
         Bucket bucket = buckets.computeIfAbsent(ip, this::createBucket);
 
         if (!bucket.tryConsume(1)) {
-            errorResponseWriter.write(
-                    response,
-                    HttpStatus.TOO_MANY_REQUESTS,
-                    "Too many login attempts. Try again in 1 minute.",
-                    request.getRequestURI()
-            );
+            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("""
+            {
+              "status": 429,
+              "error": "Too Many Requests",
+              "message": "Too many login attempts. Try again in 1 minute.",
+              "path": "/api/auth/login",
+              "timestamp": "%s"
+            }
+            """.formatted(LocalDateTime.now()));
             return;
         }
 
