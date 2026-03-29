@@ -1,6 +1,7 @@
 package com.example.contactmanager.security;
 
 import com.example.contactmanager.entity.User;
+import com.example.contactmanager.repository.ContactRepository;
 import com.example.contactmanager.repository.RefreshTokenRepository;
 import com.example.contactmanager.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ class SecurityIntegrationTest {
     @Autowired MockMvc mockMvc;
     @Autowired JwtService jwtService;
     @Autowired UserRepository userRepository;
+    @Autowired ContactRepository contactRepository;
     @Autowired RefreshTokenRepository refreshTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired RateLimitFilter rateLimitFilter;
@@ -32,6 +34,7 @@ class SecurityIntegrationTest {
     @BeforeEach
     void setUp() {
         rateLimitFilter.clearBuckets();
+        contactRepository.deleteAll();
         refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
 
