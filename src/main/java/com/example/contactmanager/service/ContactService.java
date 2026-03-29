@@ -1,11 +1,14 @@
 package com.example.contactmanager.service;
 
 import com.example.contactmanager.entity.Contact;
+import com.example.contactmanager.entity.User;
 import com.example.contactmanager.exception.ResourceNotFoundException;
 import com.example.contactmanager.repository.ContactRepository;
 import com.example.contactmanager.dto.ContactRequest;
 import com.example.contactmanager.dto.ContactResponse;
+import com.example.contactmanager.repository.UserRepository;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +30,12 @@ import org.slf4j.LoggerFactory;
 public class ContactService {
 
     private final ContactRepository contactRepository;
+    private final UserRepository userRepository;
     private static final Logger logger = LoggerFactory.getLogger(ContactService.class);
 
-    public ContactService(ContactRepository contactRepository) {
+    public ContactService(ContactRepository contactRepository, UserRepository userRepository) {
         this.contactRepository = contactRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -48,6 +53,7 @@ public class ContactService {
                 request.age(),
                 request.email(),
                 request.phoneNumber(),
+                getCurrentUser()
         );
 
         Contact saved = contactRepository.save(contact);
@@ -65,7 +71,7 @@ public class ContactService {
     @Transactional(readOnly = true)
     public Page<ContactResponse> getAll(Pageable pageable) {
         logger.debug("Fetching all contacts with pageable: {}", pageable);
-        return contactRepository.findAll(pageable).map(this::toResponse);
+        return contactRepository.findAllByUser(getCurrentUser(), pageable).map(this::toResponse);
     }
 
     /**
@@ -79,7 +85,7 @@ public class ContactService {
     public ContactResponse getById(Long id) {
         logger.debug("Fetching contact with id: {}", id);
 
-        Contact contact = contactRepository.findById(id)
+        Contact contact = contactRepository.findByIdAndUser(id, getCurrentUser())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Contact not found with id: " + id)
                 );
@@ -103,7 +109,7 @@ public class ContactService {
     public ContactResponse update(Long id, ContactRequest updatedContact) {
         logger.info("Updating contact with id: {}", id);
 
-        Contact contact = contactRepository.findById(id)
+        Contact contact = contactRepository.findByIdAndUser(id, getCurrentUser())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Contact not found with id: " + id)
                 );
@@ -130,11 +136,12 @@ public class ContactService {
     public void delete(Long id) {
         logger.info("Deleting contact with id: {}", id);
 
-        if (!contactRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Contact not found with id: " + id);
-        }
+        Contact contact = contactRepository.findByIdAndUser(id, getCurrentUser())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Contact not found with id: " + id)
+                );
 
-        contactRepository.deleteById(id);
+        contactRepository.deleteByIdAndUser(id, getCurrentUser());
     }
 
     /**
@@ -156,7 +163,7 @@ public class ContactService {
         }
 
         return contactRepository
-                .findByNameContainingIgnoreCase(name.trim(), pageable)
+                .findByNameContainingIgnoreCaseAndUser(name.trim(), getCurrentUser(), pageable)
                 .map(this::toResponse);
     }
 
@@ -176,5 +183,19 @@ public class ContactService {
                 contact.getPhoneNumber(),
                 contact.getCreatedAt()
         );
+    }
+
+    /**
+     * Returns the currently authenticated user from the security context.
+     * Throws ResourceNotFoundException if the user no longer exists in the database.
+     */
+    private User getCurrentUser() {
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User not found with username: " + username));
     }
 }
