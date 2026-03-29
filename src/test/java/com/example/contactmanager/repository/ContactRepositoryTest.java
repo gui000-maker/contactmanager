@@ -21,7 +21,7 @@ class ContactRepositoryTest {
 
     @Test
     void shouldSaveAndFindContact() {
-        Contact contact = new Contact("Alice", 30, "alice@example.com", "987654321");
+        Contact contact = new Contact("Alice", 30, "alice@example.com", "987654321", );
 
         Contact saved = contactRepository.save(contact);
         Optional<Contact> found = contactRepository.findById(saved.getId());
@@ -41,7 +41,7 @@ class ContactRepositoryTest {
 
     @Test
     void findByNameContainingIgnoreCase_shouldReturnMatches() {
-        contactRepository.save(new Contact("Alice", 30, "alice@example.com", "987654321"));
+        contactRepository.save(new Contact("Alice", 30, "alice@example.com", "987654321", ));
 
         Page<Contact> result = contactRepository
                 .findByNameContainingIgnoreCase("Alice", Pageable.unpaged());
@@ -52,7 +52,7 @@ class ContactRepositoryTest {
 
     @Test
     void findByNameContainingIgnoreCase_shouldBeCaseInsensitive() {
-        Contact alice = new Contact("Alice", 30, "alice@example.com", "987654321");
+        Contact alice = new Contact("Alice", 30, "alice@example.com", "987654321", );
         contactRepository.save(alice);
         assertThat(contactRepository.findByNameContainingIgnoreCase("aLiCe", Pageable.unpaged()))
                 .hasSize(1)

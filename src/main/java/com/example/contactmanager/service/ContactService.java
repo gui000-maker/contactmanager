@@ -47,7 +47,7 @@ public class ContactService {
                 request.name(),
                 request.age(),
                 request.email(),
-                request.phoneNumber()
+                request.phoneNumber(),
         );
 
         Contact saved = contactRepository.save(contact);

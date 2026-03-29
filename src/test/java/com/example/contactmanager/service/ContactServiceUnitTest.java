@@ -43,7 +43,7 @@ public class ContactServiceUnitTest {
                 request.name(),
                 request.age(),
                 request.email(),
-                request.phoneNumber()
+                request.phoneNumber(),
         );
 
         when(contactRepository.save(any(Contact.class))).thenReturn(contact);
@@ -67,7 +67,7 @@ public class ContactServiceUnitTest {
 
     @Test
     void getById_shouldReturnContact_whenContactExists() {
-        Contact contact = new Contact("Alice", 30, "alice@example.com", "987654321");
+        Contact contact = new Contact("Alice", 30, "alice@example.com", "987654321", );
         when(contactRepository.findById(1L)).thenReturn(Optional.of(contact));
 
         ContactResponse response = contactService.getById(1L);

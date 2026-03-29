@@ -19,17 +19,22 @@ public class Contact {
     private String email;
     private String phoneNumber;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     protected Contact() {}
 
-    public Contact(String name, int age, String email, String phoneNumber) {
+    public Contact(String name, int age, String email, String phoneNumber, User user) {
         this.name = name;
         this.age = age;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.user = user;
     }
 
     @Override
@@ -59,6 +64,10 @@ public class Contact {
         return phoneNumber;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -77,5 +86,9 @@ public class Contact {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
