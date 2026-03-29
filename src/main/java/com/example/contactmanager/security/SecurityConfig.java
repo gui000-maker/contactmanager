@@ -54,18 +54,22 @@ public class SecurityConfig {
      *   <li>403 response: returned when JWT is valid but role is insufficient</li>
      * </ul>
      *
-     * <p>Filter order: {@link JwtAuthenticationFilter} runs before
+     * <p>Filter order: {@link RateLimitFilter} runs before
+     * {@link JwtAuthenticationFilter} to limit login attempts,
+     * and {@link JwtAuthenticationFilter} runs before
      * {@link UsernamePasswordAuthenticationFilter} to validate the token
      * and populate the SecurityContext early in the chain.</p>
      *
      * @param http                   the HttpSecurity builder
      * @param jwtAuthenticationFilter the JWT filter injected as a bean
+     * @param rateLimitFilter        the rate limit filter injected as a bean
      * @return the configured {@link SecurityFilterChain}
      * @throws Exception if security configuration fails
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                   RateLimitFilter rateLimitFilter) throws Exception {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -100,6 +104,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                .addFilterBefore(rateLimitFilter, JwtAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

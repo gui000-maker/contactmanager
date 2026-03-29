@@ -140,6 +140,26 @@ import java.lang.annotation.*;
         ),
 
         @ApiResponse(
+                responseCode = "429",
+                description = "Too Many Requests — rate limit exceeded",
+                content = @Content(
+                        schema = @Schema(implementation = ApiError.class),
+                        examples = @ExampleObject(
+                                name = "TooManyRequestsExample",
+                                value = """
+                        {
+                          "status": 429,
+                          "error": "Too Many Requests",
+                          "message": "Too many login attempts. Try again in 1 minute.",
+                          "path": "/api/auth/login",
+                          "timestamp": "2026-03-27T16:00:00"
+                        }
+                        """
+                        )
+                )
+        ),
+
+        @ApiResponse(
                 responseCode = "500",
                 description = "Internal server error",
                 content = @Content(
