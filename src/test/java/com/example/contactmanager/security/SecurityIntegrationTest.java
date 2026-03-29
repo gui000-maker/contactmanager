@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,12 +35,10 @@ class SecurityIntegrationTest {
         refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
 
-        // create a regular user
         User user = new User("alice", passwordEncoder.encode("password"));
         user.setRole(Role.ROLE_USER);
         userRepository.save(user);
 
-        // create an admin user
         User admin = new User("admin", passwordEncoder.encode("password"));
         admin.setRole(Role.ROLE_ADMIN);
         userRepository.save(admin);
@@ -75,7 +72,6 @@ class SecurityIntegrationTest {
 
     @Test
     void shouldReturn403_whenValidTokenButWrongRole() throws Exception {
-        // alice is ROLE_USER — /users requires ROLE_ADMIN
         String token = jwtService.generateToken("alice");
 
         mockMvc.perform(get("/users")
@@ -109,25 +105,21 @@ class SecurityIntegrationTest {
 
     @Test
     void shouldPermitAuthEndpointWithoutToken() throws Exception {
-        var requestJson = """
-            {"username": "alice", "password": "password"}
-            """;
-
         mockMvc.perform(post("/api/auth/login")
-                        .contentType("application/json")
-                        .content(requestJson))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username": "alice", "password": "password"}
+                                """))
                 .andExpect(status().isOk());
     }
 
     @Test
     void shouldReturn200_whenRefreshingWithValidToken() throws Exception {
-        String loginJson = """
-                {"username": "alice", "password": "password"}
-                """;
-
         String loginResponse = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
+                        .content("""
+                                {"username": "alice", "password": "password"}
+                                """))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -138,14 +130,11 @@ class SecurityIntegrationTest {
                 .get("refreshToken")
                 .asText();
 
-        String refreshJson = String.format("""
-                {"refreshToken": "%s"}
-                """, refreshToken);
-
         mockMvc.perform(post("/api/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(refreshJson))
-                .andDo(print())
+                        .content(String.format("""
+                                {"refreshToken": "%s"}
+                                """, refreshToken)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").exists())
                 .andExpect(jsonPath("$.refreshToken").exists());
@@ -153,25 +142,21 @@ class SecurityIntegrationTest {
 
     @Test
     void shouldReturn404_whenRefreshingWithNonExistentToken() throws Exception {
-        String refreshJson = """
-                {"refreshToken": "00000000-0000-0000-0000-000000000000"}
-                """;
-
         mockMvc.perform(post("/api/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(refreshJson))
+                        .content("""
+                                {"refreshToken": "00000000-0000-0000-0000-000000000000"}
+                                """))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void shouldReturn204_whenLoggingOutWithValidToken() throws Exception {
-        String loginJson = """
-                {"username": "alice", "password": "password"}
-                """;
-
         String loginResponse = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginJson))
+                        .content("""
+                                {"username": "alice", "password": "password"}
+                                """))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -182,23 +167,20 @@ class SecurityIntegrationTest {
                 .get("refreshToken")
                 .asText();
 
-        String logoutJson = String.format("""
-                {"refreshToken": "%s"}
-                """, refreshToken);
-
         mockMvc.perform(post("/api/auth/logout")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(logoutJson))
+                        .content(String.format("""
+                                {"refreshToken": "%s"}
+                                """, refreshToken)))
                 .andExpect(status().isNoContent());
     }
 
     @Test
     void shouldReturn429_whenLoginExceedsRateLimit() throws Exception {
         String loginJson = """
-            {"username": "alice", "password": "password"}
-            """;
+                {"username": "alice", "password": "password"}
+                """;
 
-        // exhaust the 5 allowed attempts
         for (int i = 0; i < 5; i++) {
             mockMvc.perform(post("/api/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -206,10 +188,48 @@ class SecurityIntegrationTest {
                     .andExpect(status().isOk());
         }
 
-        // 6th attempt should be rate limited
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginJson))
                 .andExpect(status().isTooManyRequests());
+    }
+
+    @Test
+    void shouldReturnEmptyContacts_whenUserHasNoContacts() throws Exception {
+        String token = jwtService.generateToken("alice");
+
+        mockMvc.perform(get("/contacts")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content").isEmpty());
+    }
+
+    @Test
+    void shouldReturn404_whenAccessingAnotherUsersContact() throws Exception {
+        // admin creates a contact
+        String adminToken = jwtService.generateToken("admin");
+
+        String createResponse = mockMvc.perform(post("/contacts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + adminToken)
+                        .content("""
+                                {"name": "John", "age": 25, "email": "john@example.com", "phoneNumber": "123456789"}
+                                """))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        long contactId = new ObjectMapper()
+                .readTree(createResponse)
+                .get("id")
+                .asLong();
+
+        // alice tries to access admin's contact — should get 404
+        String aliceToken = jwtService.generateToken("alice");
+        mockMvc.perform(get("/contacts/" + contactId)
+                        .header("Authorization", "Bearer " + aliceToken))
+                .andExpect(status().isNotFound());
     }
 }
