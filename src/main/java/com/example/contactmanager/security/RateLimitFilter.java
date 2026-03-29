@@ -75,6 +75,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 .addLimit(limit)
                 .build();
     }
+
     /**
      * Extracts the real client IP, accounting for reverse proxies.
      */
@@ -82,5 +83,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
         String forwarded = request.getHeader("X-Forwarded-For");
         return (forwarded != null) ? forwarded.split(",")[0].trim()
                 : request.getRemoteAddr();
+    }
+
+    /**
+     * For testing — clears all rate limit buckets.
+     */
+    void clearBuckets() {
+        buckets.clear();
     }
 }

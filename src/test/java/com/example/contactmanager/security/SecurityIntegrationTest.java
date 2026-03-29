@@ -1,10 +1,8 @@
-package com.example.contactmanager.integration;
+package com.example.contactmanager.security;
 
 import com.example.contactmanager.entity.User;
 import com.example.contactmanager.repository.RefreshTokenRepository;
 import com.example.contactmanager.repository.UserRepository;
-import com.example.contactmanager.security.JwtService;
-import com.example.contactmanager.security.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,10 +28,11 @@ class SecurityIntegrationTest {
     @Autowired UserRepository userRepository;
     @Autowired RefreshTokenRepository refreshTokenRepository;
     @Autowired PasswordEncoder passwordEncoder;
-
+    @Autowired RateLimitFilter rateLimitFilter;
 
     @BeforeEach
     void setUp() {
+        rateLimitFilter.clearBuckets();
         refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -191,5 +190,26 @@ class SecurityIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(logoutJson))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldReturn429_whenLoginExceedsRateLimit() throws Exception {
+        String loginJson = """
+            {"username": "alice", "password": "password"}
+            """;
+
+        // exhaust the 5 allowed attempts
+        for (int i = 0; i < 5; i++) {
+            mockMvc.perform(post("/api/auth/login")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(loginJson))
+                    .andExpect(status().isOk());
+        }
+
+        // 6th attempt should be rate limited
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginJson))
+                .andExpect(status().isTooManyRequests());
     }
 }
