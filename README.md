@@ -17,6 +17,8 @@ Built by [gui000-maker](https://github.com/gui000-maker)
 - Docker + Docker Compose
 - Swagger / OpenAPI (springdoc)
 - JUnit 5 + Mockito + Testcontainers
+- Rate limiting for login attempts (Bucket4j)
+- Refresh token management for JWT refresh
 
 ---
 
@@ -30,6 +32,10 @@ Built by [gui000-maker](https://github.com/gui000-maker)
 - Centralized exception handling
 - API documentation via Swagger UI
 - Unit tests, integration tests, and security tests
+- Rate limiting for login attempts
+- Refresh token management for JWT refresh
+- Support for H2 and PostgreSQL databases
+- Docker Compose for local development and testing
 
 ---
 
@@ -178,6 +184,7 @@ All errors return a consistent JSON structure:
 | 403 | Authenticated but insufficient role |
 | 404 | Resource not found |
 | 409 | Conflict (e.g. duplicate username) |
+| 429 | Too many requests (rate limit exceeded) |
 | 500 | Unexpected server error |
 
 ---
