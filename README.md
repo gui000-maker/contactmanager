@@ -17,25 +17,25 @@ Built by [gui000-maker](https://github.com/gui000-maker)
 - Docker + Docker Compose
 - Swagger / OpenAPI (springdoc)
 - JUnit 5 + Mockito + Testcontainers
-- Rate limiting for login attempts (Bucket4j)
-- Refresh token management for JWT refresh
+- Bucket4j (rate limiting)
 
 ---
 
 ## Features
 
-- JWT authentication — register and login
+- JWT authentication — register, login, refresh and logout
+- Refresh token rotation — tokens are rotated on every use
 - Role-based access control — `ROLE_USER` and `ROLE_ADMIN`
+- Contact scoping — users can only access their own contacts
 - Contact CRUD with pagination and name search
 - User management restricted to admins
+- Rate limiting on login — 5 attempts per minute per IP
 - Input validation with structured JSON error responses
 - Centralized exception handling
 - API documentation via Swagger UI
 - Unit tests, integration tests, and security tests
-- Rate limiting for login attempts
-- Refresh token management for JWT refresh
-- Support for H2 and PostgreSQL databases
-- Docker Compose for local development and testing
+- Spring profiles — `dev` (H2), `prod` (PostgreSQL), test (H2)
+- Docker Compose for containerized deployment
 
 ---
 
