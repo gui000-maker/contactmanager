@@ -12,6 +12,7 @@ public record ContactRequest(
         String name,
 
         @Schema(description = "Age of the contact", example = "25")
+        @NotNull(message = "Age is required")
         @Min(value = 0, message = "Age must be >= 0")
         @Max(value = 120, message = "Age must be <= 120")
         Integer age,

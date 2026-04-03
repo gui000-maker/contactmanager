@@ -142,7 +142,7 @@ public class GlobalExceptionHandler {
         return new ApiError(
                 HttpStatus.UNAUTHORIZED.value(),
                 HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-                ex.getMessage(),
+                "Invalid username or password",
                 request.getRequestURI()
         );
     }
