@@ -101,9 +101,9 @@ class SecurityIntegrationTest {
     }
 
     @Test
-    void shouldPermitSwaggerWithoutToken() throws Exception {
+    void shouldReturn401_whenAccessingSwaggerWithoutToken() throws Exception {
         mockMvc.perform(get("/swagger-ui/index.html"))
-                .andExpect(status().isOk());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
